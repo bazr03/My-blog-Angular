@@ -1,0 +1,24 @@
+<div class="my-4">
+  <table class="table table-hover table-primary">
+    <thead>
+      <tr>
+        <th scope="col">Nombre</th>
+        <th scope="col">Apellido</th>
+        <th scope="col">e-mail</th>
+        <th scope="col">detalles</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="table-info" *ngFor="let user of users">
+        <th scope="row">{{ user.name }}</th>
+        <td>{{ user.lastName }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+          <a style="cursor: pointer;" [routerLink]="['/users', user._id]"
+            >mas info ...</a
+          >
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
