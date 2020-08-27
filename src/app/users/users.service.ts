@@ -12,6 +12,7 @@ export class UsersService {
   private users: User[];
 
   constructor(private http: HttpClient) {}
+
   fetchUsers() {
     const graphqlQuery = {
       query: `
