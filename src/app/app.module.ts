@@ -14,6 +14,7 @@ import { LoadingComponent } from './shared/loading/loading.component';
 import { ShortenPipe } from './_pipes/shorten.pipe';
 import { PostDetailsComponent } from './posts/post-details/post-details.component';
 import { PostListComponent } from './posts/post-list/post-list.component';
+import { PostEditComponent } from './posts/post-edit/post-edit.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { PostListComponent } from './posts/post-list/post-list.component';
     LoadingComponent,
     ShortenPipe,
     PostDetailsComponent,
-    PostListComponent
+    PostListComponent,
+    PostEditComponent
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule],
   providers: [],

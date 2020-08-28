@@ -20,9 +20,16 @@
           (click)="getPostComments()"
           [disabled]="!post.totalComments"
         >
-          Mensajes
+          Ver Mensajes
           <span class="badge badge-light">{{ post.totalComments }}</span>
         </button>
+        <a
+          type="button"
+          class="btn btn-success btn-sm ml-2"
+          [routerLink]="['/posts/edit', post._id]"
+        >
+          Editar
+        </a>
         <div *ngIf="areCommentsLoading">
           <app-loading></app-loading>
         </div>
