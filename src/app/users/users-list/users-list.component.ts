@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UsersService } from '../users.service';
-import { User } from '../user.model';
+import { UsersService } from '../../_services/users.service';
+import { User } from '../../_models/user.model';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -14,12 +14,12 @@ export class UsersListComponent implements OnInit, OnDestroy {
   constructor(private usersService: UsersService) {}
 
   ngOnInit(): void {
-    this.users = this.usersService.getUsers();
-    this.usersSubsc = this.usersService.usersUpdated.subscribe(
-      (users: User[]) => {
-        this.users = users;
-      }
-    );
+    // this.users = this.usersService.getUsers();
+    // this.usersSubsc = this.usersService.usersUpdated.subscribe(
+    //   (users: User[]) => {
+    //     this.users = users;
+    //   }
+    // );
   }
   ngOnDestroy() {
     this.usersSubsc.unsubscribe();
