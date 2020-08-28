@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Post } from 'src/app/_models/post.model';
-import { PostsService } from 'src/app/_services/posts.service';
-import { PostComment } from 'src/app/_models/Comment.model';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { Post } from "src/app/_models/post.model";
+import { PostsService } from "src/app/_services/posts.service";
+import { PostComment } from "src/app/_models/Comment.model";
 
 @Component({
-  selector: 'app-post-details',
-  templateUrl: './post-details.component.html',
-  styleUrls: ['./post-details.component.css']
+  selector: "app-post-details",
+  templateUrl: "./post-details.component.html",
+  styleUrls: ["./post-details.component.css"],
 })
 export class PostDetailsComponent implements OnInit {
   postId: string;
@@ -16,25 +16,30 @@ export class PostDetailsComponent implements OnInit {
   showComments = false;
   areCommentsLoading = false;
 
-  constructor(private route: ActivatedRoute, private postsService: PostsService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private postsService: PostsService
+  ) {}
 
   ngOnInit(): void {
     this.isLoading = false;
     this.postId = this.route.snapshot.params.id;
-    console.log(this.postId);
+    // console.log(this.postId);
     this.getPost();
-    this.postsService.postCommentsUpdated.subscribe( (postCom: {postId: string, comments: PostComment[]}) => {
-      console.log('comentarios recibidos en componente: ', postCom.comments);
-      if (this.postId === postCom.postId) {
-        this.post.comments = postCom.comments;
-        this.areCommentsLoading = false;
+    this.postsService.postCommentsUpdated.subscribe(
+      (postCom: { postId: string; comments: PostComment[] }) => {
+        // console.log('comentarios recibidos en componente: ', postCom.comments);
+        if (this.postId === postCom.postId) {
+          this.post.comments = postCom.comments;
+          this.areCommentsLoading = false;
+        }
       }
-    } );
+    );
   }
 
   getPost() {
     this.post = this.postsService.getPost(this.postId);
-    console.log(this.post);
+    // console.log(this.post);
     this.isLoading = false;
   }
 
@@ -45,5 +50,4 @@ export class PostDetailsComponent implements OnInit {
       this.areCommentsLoading = false;
     }
   }
-
 }

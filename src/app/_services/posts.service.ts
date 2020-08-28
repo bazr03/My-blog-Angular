@@ -1,22 +1,25 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Post } from '../_models/post.model';
-import { map } from 'rxjs/operators';
-import { Subject } from 'rxjs';
-import { PostComment } from '../_models/Comment.model';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Post } from "../_models/post.model";
+import { map } from "rxjs/operators";
+import { Subject } from "rxjs";
+import { PostComment } from "../_models/Comment.model";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class PostsService {
   PostsUpdated = new Subject<Post[]>();
-  postCommentsUpdated = new Subject<{postId: string, comments: PostComment[]}>();
+  postCommentsUpdated = new Subject<{
+    postId: string;
+    comments: PostComment[];
+  }>();
   private posts: Post[];
   private comments: PostComment[] = [];
-  private baseUrl = 'http://localhost:4000/graphql';
+  private baseUrl = "http://localhost:4000/graphql";
 
   constructor(private http: HttpClient) {}
 
   private graphqlRequest(query, variables) {
-    return this.http.post(this.baseUrl, {query, variables});
+    return this.http.post(this.baseUrl, { query, variables });
   }
 
   private fetchPosts() {
@@ -38,26 +41,26 @@ export class PostsService {
     `;
 
     this.graphqlRequest(query, null)
-    .pipe(
-      map( (res: any) => {
-        /// console.log(res);
-        return res.data.posts.map( post => {
-          return {
-            _id: post._id,
-            title: post.title,
-            body: post.body,
-            createdAt: post.createdAt,
-            creator: post.creator,
-            totalComments: post.totalComments
-          };
-        } );
-      } )
-    )
-      .subscribe( (posts: Post[]) => {
-        console.log(posts);
+      .pipe(
+        map((res: any) => {
+          /// console.log(res);
+          return res.data.posts.map((post) => {
+            return {
+              _id: post._id,
+              title: post.title,
+              body: post.body,
+              createdAt: post.createdAt,
+              creator: post.creator,
+              totalComments: post.totalComments,
+            };
+          });
+        })
+      )
+      .subscribe((posts: Post[]) => {
+        // console.log(posts);
         this.posts = posts;
         this.PostsUpdated.next([...this.posts]);
-      } );
+      });
   }
 
   private fetchCommentsByPost(postId: string) {
@@ -78,52 +81,51 @@ export class PostsService {
        }
     `;
 
-    this.graphqlRequest(query, {_id: postId})
-    .pipe(
-      map( (res: any) => {
-        return res.data.post.comments.map( cmt => {
-          return {
-            _id: cmt._id,
-            body: cmt.body,
-            creator: cmt.creator
-          };
-        } );
-      })
-    )
-       .subscribe( (comments: PostComment[]) => {
+    this.graphqlRequest(query, { _id: postId })
+      .pipe(
+        map((res: any) => {
+          return res.data.post.comments.map((cmt) => {
+            return {
+              _id: cmt._id,
+              body: cmt.body,
+              creator: cmt.creator,
+            };
+          });
+        })
+      )
+      .subscribe((comments: PostComment[]) => {
         this.saveComments(comments);
-        console.log('emitiendo commentarios', comments);
-        this.postCommentsUpdated.next({postId, comments});
-       } );
+        this.postCommentsUpdated.next({ postId, comments });
+      });
   }
   getPosts() {
     if (this.posts) {
-      console.log('Posts ya en memoria: ', this.posts );
+      // console.log("Posts ya en memoria: ", this.posts);
       return [...this.posts];
     } else {
-      console.log('Post no en memoria, haciendo request al servicdor');
+      // console.log("Post no en memoria, haciendo request al servicdor");
       this.fetchPosts();
       return null;
     }
   }
 
   getPost(id: string) {
-    const post = this.posts.find( p => p._id === id );
+    const post = this.posts.find((p) => p._id === id);
     return post;
   }
 
   getPostComments(postId: string) {
     const comments = this.findComments(postId);
     if (!comments) {
-      console.log('No Hay comentarios en memoria');
+      console.log("No Hay comentarios en memoria");
       this.fetchCommentsByPost(postId);
     }
     return comments;
   }
 
   private findComments(postId: string) {
-    const comments = this.comments.filter( cmt => cmt.postId === postId );
-    console.log('comments en findComments()', comments);
+    const comments = this.comments.filter((cmt) => cmt.postId !== postId);
+    console.log("comments en findComments()", comments);
     if (comments.length <= 0) {
       return null;
     }
@@ -132,6 +134,8 @@ export class PostsService {
   }
 
   private saveComments(comments: PostComment[]) {
+    console.log("comentarios inicio de saveComments()");
+    console.table(this.comments);
     if (this.comments.length <= 0) {
       this.comments = comments;
       return;
@@ -139,12 +143,12 @@ export class PostsService {
 
     const comts = [...this.comments];
     let tempComm;
-    comments.forEach( cmt => {
-       tempComm = comts.find( c => c._id === cmt._id );
-       if (!tempComm) {
+    comments.forEach((cmt) => {
+      tempComm = comts.find((c) => c._id === cmt._id);
+      if (!tempComm) {
         comts.push(tempComm);
-       }
-    } );
+      }
+    });
 
     this.comments = comts;
   }
@@ -217,6 +221,4 @@ export class PostsService {
   //   this.fetchPostsByUser(email);
   //   console.log('Posts no existen, haciendo llamada http');
   // }
-
-  
 }
