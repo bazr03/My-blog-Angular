@@ -25,7 +25,7 @@ const routes: Routes = [
     children: [
       { path: "", component: PostListComponent },
       { path: ":id", component: PostDetailsComponent },
-      { path: "edit/:id", component: PostEditComponent },
+      { path: ":id/edit", component: PostEditComponent },
     ],
   },
   { path: "", redirectTo: "", pathMatch: "full" },

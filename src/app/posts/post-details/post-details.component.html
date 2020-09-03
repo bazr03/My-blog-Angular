@@ -33,7 +33,7 @@
         <div *ngIf="areCommentsLoading">
           <app-loading></app-loading>
         </div>
-        <div *ngIf="!areCommentsLoading">
+        <div *ngIf="!areCommentsLoading && showComments">
           <div class="card bg-light my-2" *ngFor="let comment of post.comments">
             <div class="card-header">
               {{ comment.creator.name }}

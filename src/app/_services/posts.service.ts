@@ -89,6 +89,7 @@ export class PostsService {
               _id: cmt._id,
               body: cmt.body,
               creator: cmt.creator,
+              postId
             };
           });
         })
@@ -116,41 +117,41 @@ export class PostsService {
 
   getPostComments(postId: string) {
     const comments = this.findComments(postId);
-    if (!comments) {
+    console.log("Comments returned by findComments()", comments);
+    if (comments.length <= 0) {
       console.log("No Hay comentarios en memoria");
       this.fetchCommentsByPost(postId);
+      return;
     }
+    console.log("Comentarios en memoria, retornandolos")
     return comments;
   }
 
   private findComments(postId: string) {
-    const comments = this.comments.filter((cmt) => cmt.postId !== postId);
-    console.log("comments en findComments()", comments);
-    if (comments.length <= 0) {
-      return null;
-    }
-
+    const comments = this.comments.filter((cmt) => cmt.postId === postId);
     return comments;
   }
 
-  private saveComments(comments: PostComment[]) {
-    console.log("comentarios inicio de saveComments()");
-    console.table(this.comments);
-    if (this.comments.length <= 0) {
-      this.comments = comments;
+  private saveComments(incomingComments: PostComment[]) {
+
+    if(incomingComments.length <= 0) return;
+    if (this.comments.length <= 0 ) {
+      this.comments = incomingComments;
       return;
     }
 
-    const comts = [...this.comments];
+    const commentsUpdate= [...this.comments];
     let tempComm;
-    comments.forEach((cmt) => {
-      tempComm = comts.find((c) => c._id === cmt._id);
-      if (!tempComm) {
-        comts.push(tempComm);
+    incomingComments.forEach((inCmt, index) => {
+      tempComm = commentsUpdate.find(cmt => cmt._id === inCmt._id);
+
+      if (!tempComm ) {
+        commentsUpdate.push(inCmt);
       }
+
     });
 
-    this.comments = comts;
+    this.comments = commentsUpdate;
   }
   // fetchPostsByUser(email: string) {
   //   console.log('Ejecutando fetchPostsByUser! ');

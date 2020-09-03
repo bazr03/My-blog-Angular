@@ -44,8 +44,11 @@ export class PostDetailsComponent implements OnInit {
   }
 
   getPostComments() {
+    this.showComments = !this.showComments;
     this.areCommentsLoading = true;
-    this.post.comments = this.postsService.getPostComments(this.postId);
+    if(this.showComments) {
+      this.post.comments = this.postsService.getPostComments(this.postId);
+    }
     if (this.post.comments?.length > 0) {
       this.areCommentsLoading = false;
     }
